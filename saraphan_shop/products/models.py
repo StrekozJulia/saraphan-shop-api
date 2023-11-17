@@ -1,8 +1,12 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 from imagekit.models.fields import ImageSpecField
 from imagekit.processors import ResizeToFit, Adjust, ResizeToFill
 
 from core.constants import NAME_LEN, SLUG_LEN
+
+
+User = get_user_model()
 
 
 class Category(models.Model):
@@ -157,3 +161,52 @@ class ProductImages(models.Model):
         format='JPEG',
         options={'quality': 90}
     )
+
+
+# class Cart(models.Model):
+#     "Модель корзины с продуктами"
+#     buyer = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         verbose_name='Покупатель',
+#         related_name='cart',
+#         blank=False,
+#         null=False
+#     )
+#     purchases = models.ManyToManyField(
+#         Product,
+#         through='ProductInCart',
+#         through_fields=('cart', 'product'),
+#         related_name='carts',
+#         verbose_name='Покупка',
+#         help_text='Добавьте продукт в корзину',
+#         blank=True,
+#     )
+
+#     def __str__(self):
+#         return f'Корзина пользователя {self.buyer.username}'
+
+
+class ProductInCart(models.Model):
+    buyer = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='product_in_cart'
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='product_in_cart'
+    )
+    amount = models.IntegerField(default=1)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(
+            fields=['buyer', 'product'],
+            name='unique_cart_product'
+        )]
+
+    def __str__(self):
+        return (
+            f'Продукт {self.product.name} в корзине {self.buyer.username}'
+        )

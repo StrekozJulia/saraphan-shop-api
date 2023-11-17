@@ -1,8 +1,8 @@
 from rest_framework import mixins, viewsets
 
 
-class UserMixin(mixins.ListModelMixin,
-                mixins.CreateModelMixin,
-                # mixins.RetrieveModelMixin,
-                viewsets.GenericViewSet):
+class ProductMixin(mixins.CreateModelMixin,
+                   mixins.DestroyModelMixin,
+                   mixins.UpdateModelMixin,
+                   viewsets.GenericViewSet):
     pass
