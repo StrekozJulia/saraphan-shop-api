@@ -1,7 +1,9 @@
-n = int(input())
+n = int(input('Введите натуральное число: '))
 string = ''
-for num in range(1, n + 1):
-    string += str(num) * num
-    if len(string) >= n:
-        break
-print(string[:n])
+counter = 0
+num = 1
+while counter + num <= n:
+    print(str(num) * num, end='')
+    counter += num
+    num += 1
+print(str(num) * (n - counter), end='')

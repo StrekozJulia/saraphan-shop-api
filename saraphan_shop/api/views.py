@@ -1,41 +1,39 @@
-from rest_framework import permissions, viewsets, status
-from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
 
 from products.models import Category, Product, ProductInCart
-from .serializers import (CategorySerializer,
+from .serializers import (CartSerializer,
+                          CategorySerializer,
                           ProductSerializer,
                           ReadProductInCartSerializer,
-                          WriteProductInCartSerializer,
-                          CartSerializer)
-from .permissions import CartPermission
+                          WriteProductInCartSerializer)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
     """Просмотр имеющихся категорий продуктов"""
-
     http_method_names = ('get', )
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    """Просмотр имеющихся категорий продуктов"""
-
+    """Просмотр имеющихся продуктов"""
     http_method_names = ('get', )
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
 
 
 class ProductInCartViewSet(viewsets.ModelViewSet):
+    """
+    Добавление продукта в корзину, удаление продукта
+    из корзины, редактирование количества продуктов в корзине
+    """
+    permission_classes = (permissions.IsAuthenticated, )
 
-    permission_classes = (permissions.IsAuthenticated,
-                          CartPermission)
-
-    def get_queryset(self):
-        return ProductInCart.objects.all()
+    queryset = ProductInCart.objects.all()
 
     def get_serializer_class(self):
         if self.request.method in permissions.SAFE_METHODS:

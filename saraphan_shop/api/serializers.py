@@ -1,12 +1,12 @@
-from rest_framework import serializers
 import base64
 from django.core.files.base import ContentFile
+from rest_framework import serializers
 
 from products.models import (Category,
-                             Subcategory,
                              Product,
                              ProductImages,
                              ProductInCart,
+                             Subcategory,
                              User)
 
 
@@ -50,7 +50,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    """Сериализатор для отображения продуктов."""
+    """Сериализатор для отображения списка продуктов в базе."""
     images = ImagesSerializer(many=True)
     category = serializers.ReadOnlyField(source='subcategory.category.name')
     subcategory = serializers.ReadOnlyField(source='subcategory.name')
@@ -68,7 +68,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class WriteProductInCartSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления продукта в корзину"""
-
     buyer = serializers.PrimaryKeyRelatedField(
         read_only=True,
         default=serializers.CurrentUserDefault()
@@ -95,7 +94,6 @@ class WriteProductInCartSerializer(serializers.ModelSerializer):
 
 class ReadProductInCartSerializer(serializers.ModelSerializer):
     """Сериализатор для отображения продуктов в корзине"""
-
     name = serializers.ReadOnlyField(source='product.name')
     price = serializers.ReadOnlyField(source='product.price')
     amount = serializers.ReadOnlyField()

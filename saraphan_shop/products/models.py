@@ -119,6 +119,10 @@ class Product(models.Model):
     )
 
     def save(self, *args, **kwargs):
+        """
+        Метод: при сохранении модели продукта сохраняет
+        модель с иллюстрациями разных размеров
+        """
         super(Product, self).save(*args, **kwargs)
         product = self
         ProductImages.objects.create(
@@ -163,42 +167,23 @@ class ProductImages(models.Model):
     )
 
 
-# class Cart(models.Model):
-#     "Модель корзины с продуктами"
-#     buyer = models.ForeignKey(
-#         User,
-#         on_delete=models.CASCADE,
-#         verbose_name='Покупатель',
-#         related_name='cart',
-#         blank=False,
-#         null=False
-#     )
-#     purchases = models.ManyToManyField(
-#         Product,
-#         through='ProductInCart',
-#         through_fields=('cart', 'product'),
-#         related_name='carts',
-#         verbose_name='Покупка',
-#         help_text='Добавьте продукт в корзину',
-#         blank=True,
-#     )
-
-#     def __str__(self):
-#         return f'Корзина пользователя {self.buyer.username}'
-
-
 class ProductInCart(models.Model):
     buyer = models.ForeignKey(
         User,
+        verbose_name='Владелец корзины',
         on_delete=models.CASCADE,
         related_name='product_in_cart'
     )
     product = models.ForeignKey(
         Product,
+        verbose_name='Продукт в корзине пользователя',
         on_delete=models.CASCADE,
         related_name='product_in_cart'
     )
-    amount = models.IntegerField(default=1)
+    amount = models.IntegerField(
+        'Количество продукта в корзине',
+        default=1
+    )
 
     class Meta:
         constraints = [models.UniqueConstraint(

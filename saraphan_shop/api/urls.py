@@ -2,14 +2,14 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (CategoryViewSet,
-                    ProductViewSet,
                     ProductInCartViewSet,
+                    ProductViewSet,
                     shopping_cart)
 
 app_name = 'api'
 
 router_v1 = DefaultRouter()
-router_v1.register('category', CategoryViewSet, basename='categories')
+router_v1.register('categories', CategoryViewSet, basename='categories')
 router_v1.register('products', ProductViewSet, basename='products')
 router_v1.register(r'products/(?P<product_id>\d+)/shopping_cart',
                    ProductInCartViewSet,
